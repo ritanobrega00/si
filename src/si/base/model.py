@@ -68,3 +68,26 @@ class Model(Estimator, ABC):
         """
         self.fit(dataset)
         return self.predict(dataset)
+
+    def _score(self, dataset)-> float:
+        """"
+        
+        """
+     def score(self, dataset):
+        """
+        Score the model on the dataset.
+        The model needs to be fitted before calling this method.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to score the model on.
+
+        Returns
+        -------
+        score: float
+            The score of the model on the dataset.
+        """
+        if not self.is_fitted:
+            raise ValueError('Model needs to be fitted before calling score()')
+        return self._score(dataset)
