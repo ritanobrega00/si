@@ -1,37 +1,59 @@
+from typing import Callable, Dict, List
+
 import numpy as np
-from si.model import Model
-from si.dataset import Dataset
 
-class CrossValidator:
-    def setUp(self, seed: int = None):
-        self.seed = seed
+from si.data.dataset import Dataset
 
-    def k_fold_cross_validation(model: Model, dataset: Dataset, scoring: callable, cv: int, seed: int = None):
-        if seed is not None:
-            np.random.seed(seed)
-        
-        num_samples = dataset.X.shape[0]
 
-        samples_per_fold = num_samples // cv
+def k_fold_cross_validation(model, dataset: Dataset, scoring: callable = None, cv: int = 3,
+                            seed: int = None) -> List[float]:
+    """
+    Perform k-fold cross-validation on the given model and dataset.
 
-        scores = []
+    Parameters
+    ----------
+    model
+        The model to cross validate.
+    dataset: Dataset
+        The dataset to cross validate on.
+    scoring: Callable
+        The scoring function to use. If None, the model's score method will be used.
+    cv: int
+        The number of cross-validation folds.
+    seed: int
+        The seed to use for the random number generator.
 
-        indexes = np.array(num_samples)
-        np.random.shuffle(indexes)
-        for i in range(cv):
-            start = samples_per_fold * i
-            end = samples_per_fold * (i + 1)
+    Returns
+    -------
+    scores: List[float]
+        The scores of the model on each fold.
+    """
+    num_samples = dataset.X.shape[0]
+    fold_size = num_samples // cv
+    scores = []
 
-            test_indexes = indexes[start:end]
-            train_indexes = np.concatenate([indexes[:start], indexes[end:]])
+    # Create an array of indices to shuffle the data
+    if seed is not None:
+        np.random.seed(seed)
+    indices = np.arange(num_samples)
+    np.random.shuffle(indices)
 
-            train_dataset = Dataset(X = dataset.X[train_indexes], y= dataset.y[train_indexes])
-            test_dataset = Dataset(X = dataset.X[test_indexes], y= dataset.y[test_indexes])
+    for fold in range(cv):
+        # Determine the indices for the current fold
+        start = fold * fold_size
+        end = (fold + 1) * fold_size
 
-            model.fit(train_dataset)
-            predictions = model.predict(test_dataset)
-            score = scoring(test_dataset.y, predictions)
-            scores.append(score)
+        # Split the data into training and testing sets
+        test_indices = indices[start:end]
+        train_indices = np.concatenate((indices[:start], indices[end:]))
 
-        return scores
+        dataset_train = Dataset(dataset.X[train_indices], dataset.y[train_indices])
+        dataset_test = Dataset(dataset.X[test_indices], dataset.y[test_indices])
 
+        # Fit the model on the training set and score it on the test set
+        model.fit(dataset_train)
+        fold_score = scoring(dataset_test.y, model.predict(dataset_test)) if scoring is not None else model.score(
+            dataset_test)
+        scores.append(fold_score)
+
+    return scores

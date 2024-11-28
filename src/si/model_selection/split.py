@@ -1,27 +1,43 @@
-def train_test_split(dataset, test_size=0.2, random_state=None)->tuple:
+from typing import Tuple
+
+import numpy as np
+
+from si.data.dataset import Dataset
+
+
+def train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int = 42) -> Tuple[Dataset, Dataset]:
     """
-    Split the dataset into a training and a test set.
+    Split the dataset into training and testing sets
 
     Parameters
     ----------
     dataset: Dataset
-        The dataset to split.
-    test_size: float, optional
-        The proportion of the dataset to include in the test split.
-    random_state: int, optional
-        The seed used by the random number generator.
+        The dataset to split
+    test_size: float
+        The proportion of the dataset to include in the test split
+    random_state: int
+        The seed of the random number generator
 
     Returns
     -------
-    train_set: Dataset
-        The training set.
-    test_set: Dataset
-        The test set.
+    train: Dataset
+        The training dataset
+    test: Dataset
+        The testing dataset
     """
-    if random_state is not None:
-        np.random.seed(random_state)
-    indices = np.random.permutation(len(dataset))
-    test_size = int(len(dataset) * test_size)
-    test_indices = indices[:test_size]
-    train_indices = indices[test_size:]
-    return dataset[train_indices], dataset[test_indices]
+    # set random state
+    np.random.seed(random_state)
+    # get dataset size
+    n_samples = dataset.shape()[0]
+    # get number of samples in the test set
+    n_test = int(n_samples * test_size)
+    # get the dataset permutations
+    permutations = np.random.permutation(n_samples)
+    # get samples in the test set
+    test_idxs = permutations[:n_test]
+    # get samples in the training set
+    train_idxs = permutations[n_test:]
+    # get the training and testing datasets
+    train = Dataset(dataset.X[train_idxs], dataset.y[train_idxs], features=dataset.features, label=dataset.label)
+    test = Dataset(dataset.X[test_idxs], dataset.y[test_idxs], features=dataset.features, label=dataset.label)
+    return train, test
