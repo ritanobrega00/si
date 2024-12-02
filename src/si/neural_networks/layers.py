@@ -95,3 +95,47 @@ class DenseLayer(Layer):
         self.input = input
         self.output = np.dot(self.input, self.weights) + self.biases
         return self.output
+    
+    def backward_propagation(self, output_error: np.ndarray) -> float:
+        """
+        Perform backward propagation on the given output error.
+        Computes the dE/dW, dE/dB for a given output_error=dE/dY.
+        Returns input_error=dE/dX to feed the previous layer.
+
+        Parameters
+        ----------
+        output_error: numpy.ndarray
+            The output error of the layer.
+
+        Returns
+        -------
+        float
+            The input error of the layer.
+        """
+        # computes the layer input error (the output error from the previous layer),
+        # dE/dX, to pass on to the previous layer
+        # SHAPES: (batch_size, input_columns) = (batch_size, output_columns) * (output_columns, input_columns)
+        input_error = np.dot(output_error, self.weights.T)
+
+        # computes the weight error: dE/dW = X.T * dE/dY
+        # SHAPES: (input_columns, output_columns) = (input_columns, batch_size) * (batch_size, output_columns)
+        weights_error = np.dot(self.input.T, output_error)
+        # computes the bias error: dE/dB = dE/dY
+        # SHAPES: (1, output_columns) = SUM over the rows of a matrix of shape (batch_size, output_columns)
+        bias_error = np.sum(output_error, axis=0, keepdims=True)
+
+        # updates parameters
+        self.weights = self.w_opt.update(self.weights, weights_error)
+        self.biases = self.b_opt.update(self.biases, bias_error)
+        return input_error
+    
+    def output_shape(self) -> tuple:
+        """
+        Returns the shape of the output of the layer.
+
+        Returns
+        -------
+        tuple
+            The shape of the output of the layer.
+        """
+        return (self.n_units,) 
