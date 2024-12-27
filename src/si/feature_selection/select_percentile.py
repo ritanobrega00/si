@@ -35,7 +35,7 @@ class SelectPercentile(Transformer):
         Parameters: dataset (object Dataset)
         Returns self (the fitted SelectPercentile object)
         """        
-        self.F, self.p = self.score_func(dataset.X, dataset.y)
+        self.F, self.p = self.score_func(dataset)
         return self
 
     def _transform(self, dataset: Dataset):
