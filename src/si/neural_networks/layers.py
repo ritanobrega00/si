@@ -3,6 +3,8 @@ import copy
 
 import numpy as np
 
+from si.neural_networks.optimizers import Optimizer
+
 
 class Layer(metaclass=ABCMeta):
 
