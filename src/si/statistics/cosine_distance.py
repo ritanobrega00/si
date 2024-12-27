@@ -16,7 +16,7 @@ def cosine_distance(x: np.ndarray, y: np.ndarray) -> np.array:
     norm_x = np.linalg.norm(x)
     norm_y = np.linalg.norm(y, axis=1)
 
-    # Compute cosine similarity and then distance (that is 1 - cosine similarity)
+    # As cosine distance = 1 - cosine similarity, first the cosine similarity is calculated and then the cosine distance
     cosine_similarity = dot_product / (norm_x * norm_y)
     cosine_distance = 1 - cosine_similarity
 
