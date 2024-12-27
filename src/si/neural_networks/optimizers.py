@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-import numpy as np
-from abc import ABC, abstractmethod
-
-class Optimizer(ABC):
-=======
 from abc import abstractmethod
 
 import numpy as np
@@ -11,18 +5,10 @@ import numpy as np
 
 class Optimizer:
 
->>>>>>> 2c596bf371d8771940bca2540623d5db9e1b5cdc
     def __init__(self, learning_rate: float):
         self.learning_rate = learning_rate
 
     @abstractmethod
-<<<<<<< HEAD
-    def update(self, params, grads):
-        raise NotImplementedError
-
-class SGD(Optimizer):
-    def __init__(self, learning_rate: float, momentum: float = 0.0):
-=======
     def update(self, w: np.ndarray, grad_loss_w: np.ndarray) -> np.ndarray:
         """
         Update the weights of the layer.
@@ -55,7 +41,6 @@ class SGD(Optimizer):
         momentum:
             The momentum to use for updating the weights.
         """
->>>>>>> 2c596bf371d8771940bca2540623d5db9e1b5cdc
         super().__init__(learning_rate)
         self.momentum = momentum
         self.retained_gradient = None
