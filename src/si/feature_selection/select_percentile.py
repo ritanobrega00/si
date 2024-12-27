@@ -41,8 +41,8 @@ class SelectPercentile(Transformer):
     def _transform(self, dataset: Dataset):
         """
         Aim: selects features with the highest F value up to the specified percentile
-        Parameters: dataset (object Dataset)
-        Returns: dataset with the selected features (object Dataset)
+        Parameters: dataset (Dataset object)
+        Returns: a Dataset object with the selected features (object Dataset)
         """
         num_features = int(len(self.F) * (self.percentile / 100)) # number of features to select based on the percentile
         top_indices = np.argsort(self.F)[-num_features:]  #indices of the features with higher F value
