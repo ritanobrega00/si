@@ -110,6 +110,22 @@ class Dataset:
         """
         return np.nanmax(self.X, axis=0)
     
+    def summary(self) -> pd.DataFrame:
+        """
+        Returns a summary of the dataset
+        Returns
+        -------
+        pandas.DataFrame (n_features, 5)
+        """
+        data = {
+            "mean": self.get_mean(),
+            "median": self.get_median(),
+            "min": self.get_min(),
+            "max": self.get_max(),
+            "var": self.get_variance()
+        }
+        return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
+
     def dropna(self) -> 'Dataset':
         """
         Aim: Removes all samples from the Dataset where at least one independent feature contains a NaN
@@ -175,22 +191,6 @@ class Dataset:
         if self.y is not None:
             self.y = np.delete(self.y, index)
         return self
-
-    def summary(self) -> pd.DataFrame:
-        """
-        Returns a summary of the dataset
-        Returns
-        -------
-        pandas.DataFrame (n_features, 5)
-        """
-        data = {
-            "mean": self.get_mean(),
-            "median": self.get_median(),
-            "min": self.get_min(),
-            "max": self.get_max(),
-            "var": self.get_variance()
-        }
-        return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
 
     @classmethod
     def from_dataframe(cls, df: pd.DataFrame, label: str = None):
