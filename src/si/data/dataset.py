@@ -109,6 +109,72 @@ class Dataset:
         numpy.ndarray (n_features)
         """
         return np.nanmax(self.X, axis=0)
+    
+    def dropna(self) -> 'Dataset':
+        """
+        Aim: Removes all samples from the Dataset where at least one independent feature contains a NaN
+        Updates the y vector by removing the entry associated with the sample to be removed
+        Arguments: None
+        Returns: modified Dataset
+        """
+        # Identification of the rows with no NaN values, using a mask
+        mask = ~np.isnan(self.X).any(axis=1)  
+        
+        # The mask is used to filter rows in self.X where no NaN values are present
+        self.X = self.X[mask]
+        
+        # If there is a y  vector (is not None) 
+        # then its updated by removing entries associated with the samples to be eliminated
+        if self.y is not None:
+            self.y = self.y[mask]
+        return self
+    
+    def fillna(self, value: Union[int, float]) -> 'Dataset':
+        """
+        Aim: Replaces all NaN values in the Dataset with the specified value (mean or median of the feature/variable)
+        Ensures that no NaN values remain in the modified Dataset and raises an error otherwise.
+        Arguments: value (int or float) - the value to fill NaN with
+        Returns: modified Dataset
+        """
+        # first we check if the value is a float or an int, if is is then we replace NaN with the specified value
+        if isinstance(value, float):
+            # Replace NaN with the specified value
+            self.X = np.where(np.isnan(self.X), value, self.X)
+
+        # if the value is a string, we check if it is 'mean' or 'median', and then replace NaN according to the input given
+        elif value == "mean":
+            # Replace NaN with the mean of each column
+            means = np.nanmean(self.X, axis=0)
+            inds = np.where(np.isnan(self.X))
+            self.X[inds] = np.take(means, inds[1])
+        elif value == "median":
+            # Replace NaN with the median of each column
+            medians = np.nanmedian(self.X, axis=0)
+            inds = np.where(np.isnan(self.X))
+            self.X[inds] = np.take(medians, inds[1])
+        else:
+            raise ValueError("Invalid value parameter. Use a float, 'mean', or 'median'.")
+        
+        # Check if any NaN values remain
+        if np.isnan(self.X).any():
+            raise ValueError("NaN values remain in the dataset after replacement.")
+            
+        return self
+    
+    def remove_by_index(self, index: int) -> 'Dataset':
+        """
+        Aim: Removes the sample at the specified index from the Dataset
+        Updates the y by removing the entry associated with the sample to be removed
+        Arguments: index (int) - the index of the sample to remove
+        Returns: modified Dataset
+        """
+        # Remove the sample at the specified index
+        self.X = np.delete(self.X, index, axis=0)
+        
+        # If there is a y vector (is not None) then its updated by removing the entry associated with the sample to be removed
+        if self.y is not None:
+            self.y = np.delete(self.y, index)
+        return self
 
     def summary(self) -> pd.DataFrame:
         """
