@@ -116,3 +116,4 @@ This package is heavily inspired and adapted from:
 - [https://github.com/vmspereira/si](https://github.com/vmspereira/si)
 - [https://github.com/cruz-f/si](https://github.com/cruz-f/si)
 - [https://github.com/jcorreia11/si](https://github.com/jcorreia11/si)
+- [https://github.com/jcapels/si](https://github.com/jcapels/si)
