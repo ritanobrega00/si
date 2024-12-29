@@ -25,14 +25,14 @@ component (it's a vector of eigenvalues)
         self.components = None
         self.explained_variance = None
 
-    def _fit(self, X, normalized:bool=True) -> None:
+    def _fit(self, X, normalization:bool=False) -> None:
         """
         the _fit method doesn't return anything, it just stores the estimated parameters in the object
         first we check/transform the input data to a numpy array the we check if the number of components is valid
 
-        Due to the impportance of using normalized data in PCA, we center the data by subtracting the mean from the data for each feature
-        However centering the data is not enough, we also need to scale the data to have a unit variance for each feature
-        if the user indicates that the data is not normalized: there will be an extra step to scale the data to have a unit variance for each feature 
+        Centering the data is an essential step in PCA, however we centering and normalizing are not the same thing
+        Therefore if the user wants to normalize the data, one of the parameters will be normalization = True (otherwise it will just be centered)
+        If this parameter equals True, there will be an extra step to scale the data to have a unit variance for each feature 
         """
         if X is not np.array:
             X = np.array(X)
@@ -44,7 +44,7 @@ component (it's a vector of eigenvalues)
         X_centered = X - self.mean
 
         # Normalizing the data (scaling the data by dividing it by the standard deviation of each feature)
-        if normalized is False:
+        if normalization:
             X_normalized = X_centered / np.std(X_centered, axis=0)
             X_to_use = X_normalized
         else:
