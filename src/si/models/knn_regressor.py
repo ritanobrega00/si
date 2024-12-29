@@ -92,13 +92,12 @@ if __name__ == '__main__':
     from si.data.dataset import Dataset
     from si.model_selection.split import train_test_split
 
-    # Generate random dataset
     dataset_ = Dataset.from_random(600, 100, 1)
     dataset_train, dataset_test = train_test_split(dataset_, test_size=0.2)
 
     knn = KNNRegressor(k=3)
     knn.fit(dataset_train)
-    predictions = knn.predict(dataset_test)
-    score = knn.score(dataset_test, predictions)
+    score = knn.score(dataset_test)  
     print(f'The RMSE of the model is: {score}')
+
 
