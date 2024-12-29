@@ -45,7 +45,7 @@ component (it's a vector of eigenvalues)
 
         # Normalizing the data (scaling the data by dividing it by the standard deviation of each feature)
         if normalization:
-            X_normalized = X_centered / np.std(X_centered, axis=0)
+            X_normalized = X_centered / np.std(X, axis=0)
             X_to_use = X_normalized
         else:
             X_to_use = X_centered
