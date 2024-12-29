@@ -25,23 +25,33 @@ component (it's a vector of eigenvalues)
         self.components = None
         self.explained_variance = None
 
-    def _fit(self, X) -> None:
-        #the _fit method doesn't return anything, it just stores the estimated parameters in the object
-        
-        #first we check/transform the input data to a numpy array
+    def _fit(self, X, normalized:bool=True) -> None:
+        """
+        the _fit method doesn't return anything, it just stores the estimated parameters in the object
+        first we check/transform the input data to a numpy array the we check if the number of components is valid
+
+        Due to the impportance of using normalized data in PCA, we center the data by subtracting the mean from the data for each feature
+        However centering the data is not enough, we also need to scale the data to have a unit variance for each feature
+        if the user indicates that the data is not normalized: there will be an extra step to scale the data to have a unit variance for each feature 
+        """
         if X is not np.array:
             X = np.array(X)
-
-        #the we check if the number of components is valid
         if self.n_components <= 0 or self.n_components > X.shape[1]:
             raise ValueError(f"n_components must be in the range (0, {X.shape[1]}].")
 
         # Centering the data (get the mean and subtract it from the data for each feature)
-        self.mean = np.mean(X, axis=0) #axis=0 means that the mean is calculated for each feature/column across all samples
+        self.mean = np.mean(X, axis=0) #axis=0 means that we are calculating the mean for each feature
         X_centered = X - self.mean
 
+        # Normalizing the data (scaling the data by dividing it by the standard deviation of each feature)
+        if normalized is False:
+            X_normalized = X_centered / np.std(X_centered, axis=0)
+            X_to_use = X_normalized
+        else:
+            X_to_use = X_centered
+        
         # Calculation of the covariance matrix of the centered data
-        covariance_matrix = np.cov(X_centered, rowvar=False) # rowvar=False means that the columns are the variables and rows are samples
+        covariance_matrix = np.cov(X_to_use, rowvar=False) # rowvar=False means that the columns are the variables and rows are samples
         # Eigenvalue decomposition on the covariance matrix
         eigenvalues, eigenvectors = np.linalg.eig(covariance_matrix)
 
