@@ -19,13 +19,15 @@ component (it's a vector of eigenvalues)
     _fit – estimates the mean, principal components, and explained variance
     _transform – calculates the reduced dataset using the principal components
     """
-    def __init__(self, n_components):
+    def __init__(self, n_components:int):
         self.n_components = n_components
         self.mean = None
         self.components = None
         self.explained_variance = None
 
-    def _fit(self, X):
+    def _fit(self, X: np.ndarray) -> None:
+        #the _fit method doesn't return anything, it just stores the estimated parameters in the object
+        
         # Centering the data (get the mean and subtract it from the data for each feature)
         self.mean = np.mean(X, axis=0) #axis=0 means that the mean is calculated for each feature/column across all samples
         X_centered = X - self.mean
@@ -45,8 +47,15 @@ component (it's a vector of eigenvalues)
         total_variance = np.sum(eigenvalues)
         self.explained_variance = eigenvalues[:self.n_components] / total_variance
 
+        
+
     def _transform(self, X):
-        # Centering the data (using what was done previously in the fit method)
+        # as the transform method is going to use the stored estimated parameters from the fit method
+        # We perform a check to ensure that the fit method has been called before calling the transform
+        if self.mean is None or self.components is None:
+            raise RuntimeError("PCA has not been fitted. Call fit() before transform().")
+        
+        # Centering the data
         X_centered = X - self.mean
 
         # Reduction of X to the principal components = X * matrix of principal components
