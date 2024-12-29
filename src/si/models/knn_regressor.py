@@ -73,7 +73,7 @@ class KNNRegressor(Model):
             predictions.append(prediction)
         return np.array(predictions)
     
-    def _score(self, dataset: Dataset) -> float:
+    def _score(self, dataset: Dataset, predictions) -> float:
         """
         Aim: Calculate the error between the estimated values and the real ones (rmse)
 
@@ -84,9 +84,9 @@ class KNNRegressor(Model):
         float -> error between predictions and actual values (rmse)  
         """
         #get the prediction values (y_pred)
-        y_pred = self._predict(dataset)
+        predictions = self._predict(dataset)
         #calculate the RMSE between the true and predicted values
-        return rmse(dataset.y, y_pred)
+        return rmse(dataset.y, predictions)
     
 if __name__ == '__main__':
     from si.data.dataset import Dataset
