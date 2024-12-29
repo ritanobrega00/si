@@ -25,9 +25,17 @@ component (it's a vector of eigenvalues)
         self.components = None
         self.explained_variance = None
 
-    def _fit(self, X: np.ndarray) -> None:
+    def _fit(self, X) -> None:
         #the _fit method doesn't return anything, it just stores the estimated parameters in the object
         
+        #first we check/transform the input data to a numpy array
+        if X is not np.array:
+            X = np.array(X)
+
+        #the we check if the number of components is valid
+        if self.n_components <= 0 or self.n_components > X.shape[1]:
+            raise ValueError(f"n_components must be in the range (0, {X.shape[1]}].")
+
         # Centering the data (get the mean and subtract it from the data for each feature)
         self.mean = np.mean(X, axis=0) #axis=0 means that the mean is calculated for each feature/column across all samples
         X_centered = X - self.mean
