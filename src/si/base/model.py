@@ -70,7 +70,8 @@ class Model(Estimator, ABC):
         predictions: np.ndarray
             The predicted target values.
         """
-        self.fit(dataset)
+        if not self.is_fitted():
+            self.fit(dataset)
         return self.predict(dataset)
     
     @abstractmethod
