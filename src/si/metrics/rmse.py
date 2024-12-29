@@ -10,6 +10,8 @@ def rmse(y_true, Y_pred) -> float:
     Y_pred: np.array -> The predicted values
 
     Returns:
-    float -> The root mean squared error between the true and predicted values
+    float -> The root mean squared error between the true and predicted values 
+    -> Low RMSE: Indicates that the model's predictions are close to the actual values, better performance.
+    -> High RMSE: Indicates larger errors in predictions, worse performance.
     """
     return np.sqrt(mean_squared_error(y_true, Y_pred))
