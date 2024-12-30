@@ -28,7 +28,6 @@ def k_fold_cross_validation(model, dataset: Dataset, scoring: callable = None, c
     scores: List[float]
         The scores of the model on each fold.
     """
-    print(f"Inside k_fold_cross_validation: Dataset type: {type(dataset)}")
     num_samples = dataset.X.shape[0]
     fold_size = num_samples // cv
     scores = []
@@ -53,11 +52,10 @@ def k_fold_cross_validation(model, dataset: Dataset, scoring: callable = None, c
 
         # Fit the model on the training set and score it on the test set
         model.fit(dataset_train)
-        print(f"Inside the folf loop: {type(dataset_test)}")
-        fold_score = scoring(dataset_test.y, model.predict(dataset_test)) if scoring is not None else model.score(
-            dataset_test)
-        print(f"Fold score: {fold_score}")
-        print(f"After the fold loop: {type(dataset_test)}")
+        if scoring is not None:
+            fold_score = scoring(dataset_test.y, model.predict(dataset_test))
+        else:
+            fold_score = model.score(dataset_test)
+        print("fold_score: ", fold_score)
         scores.append(fold_score)
-    print(f"After the fold loop: {type(dataset_test)}")
     return scores
