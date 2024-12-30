@@ -122,6 +122,12 @@ class RandomForestClassifier(Model):
 
         # get the most common prediction for each sample
         final_predictions = [np.bincount(row).argmax() for row in predictions]
+
+        # If the labels are strings (like in the iris.csv), map back to original labels
+        if isinstance(dataset.y[0], str):
+            unique_labels = np.unique(dataset.y)
+            final_predictions = unique_labels[final_predictions]
+
         return np.array(final_predictions)
 
     def _score(self, dataset: Dataset, predictions: np.ndarray) -> float:
