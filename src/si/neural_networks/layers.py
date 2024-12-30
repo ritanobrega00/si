@@ -141,3 +141,80 @@ class DenseLayer(Layer):
             The shape of the output of the layer.
         """
         return (self.n_units,) 
+    
+class Dropout(Layer):
+    """
+    Dropout layer of a neural network.
+
+    Parameters:
+    probability: float – the dropout rate, between 0 and 1
+
+    Estimated parameters:
+    mask – binomial mask that sets some inputs to 0 based on the probability
+    input - the input to the layer
+    output - the output of the layer
+
+    Methods:
+    forward_propagation – performs forward propagation on the given input
+    backward_propagation – performs backward propagation on the given error
+    output_shape – returns the input_shape (dropout does not change the shape of the data)
+    parameters – returns 0 (droupout layers don't have learnable parameters)
+
+    """
+
+    def __init__(self, probability: float):
+        """
+        Initialize the Dropout layer.
+
+        Parameters
+        ----------
+        probability: float
+            The dropout rate, between 0 and 1.
+        """
+        super().__init__()
+        self.probability = probability
+        self.mask = None
+        self.input = None
+        self.output = None
+
+    def forward_propagation(self, input: np.ndarray, training: bool) -> np.ndarray:
+        """
+        Aim: Perform forward propagation on the given input.
+
+        Parameters:
+        input: numpy.ndarray - The input to the layer
+        training: bool - to indicate whether the layer is in training mode or in inference mode.
+
+        Returns: a numpy.ndarray - The output of the layer
+        """
+        self.input = input
+        #when in training mode
+        if training:
+            # Compute the scaling factor
+            scaling_factor = 1 / (1 - self.probability)
+            # Create a mask using a binomial distribution
+            self.mask = np.random.binomial(1, 1 - self.probability, size=input.shape)
+            # Apply the mask and scale the input
+            self.output = input * self.mask * scaling_factor
+        
+        else: # When in inference mode -> return the input
+            self.output = input
+        
+        return self.output
+
+    def backward_propagation(self, output_error: np.ndarray) -> np.ndarray:
+        """
+        Aim: Perform backward propagation on the given output error.
+
+        Parameters:
+        output_error: numpy.ndarray - The output error of the layer.
+
+        Returns: a numpy.ndarray - The input error of the layer, which is the output error multiplied by the mask.
+        """
+        return output_error * self.mask
+
+    def output_shape(self) -> tuple:
+        return self.input_shape()
+
+    def parameters(self) -> int:
+        return 0
