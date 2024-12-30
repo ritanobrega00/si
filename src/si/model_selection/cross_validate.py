@@ -29,6 +29,7 @@ def k_fold_cross_validation(model, dataset: Dataset, scoring: callable = None, c
         The scores of the model on each fold.
     """
         # Add this at the beginning of k_fold_cross_validation
+    print(type(breast_bin))  # Should output: <class 'si.data.dataset.Dataset'>
     print(f"Dataset X type: {type(dataset.X)}")
     print(f"Dataset y type: {type(dataset.y)}")
     print(f"Dataset X shape: {dataset.X.shape}")
