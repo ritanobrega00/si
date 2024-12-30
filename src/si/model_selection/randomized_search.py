@@ -41,10 +41,7 @@ def randomized_search_cv(model, dataset: Dataset, hyperparameter_grid: Dict[str,
             setattr(model, parameter, value)
 
         # Cross validate the model
-        print(f"Before CV: Dataset type: {type(dataset)}")
         score = scoring(model=model, dataset=dataset, cv=cv)
-        print(f"After CV: Dataset type: {type(dataset)}")
-
         results['scores'].append(np.mean(score)) # Save the mean of the scores
         results['hyperparameters'].append(combination) #Save the hyperparameters
 
