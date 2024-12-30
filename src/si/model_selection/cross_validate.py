@@ -28,6 +28,8 @@ def k_fold_cross_validation(model, dataset: Dataset, scoring: callable = None, c
     scores: List[float]
         The scores of the model on each fold.
     """
+    if not isinstance(dataset, Dataset):
+        dataset = Dataset(dataset)
     print("dataset1",type(dataset))  
 
     num_samples = dataset.X.shape[0]
