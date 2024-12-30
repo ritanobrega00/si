@@ -40,6 +40,10 @@ def randomized_search_cv(model, dataset: Dataset, hyperparameter_grid: Dict[str,
         for parameter, value in combination.items():
             setattr(model, parameter, value)
 
+        print(f"Dataset X type: {type(dataset.X)}")
+        print(f"Dataset y type: {type(dataset.y)}")
+        print(f"Dataset X shape: {dataset.X.shape}")
+        print(f"Dataset y shape: {dataset.y.shape}")
         # Cross validate the model
         score = k_fold_cross_validation(model=model, dataset=dataset, scoring=scoring, cv=cv)
         results['scores'].append(np.mean(score)) # Save the mean of the scores
