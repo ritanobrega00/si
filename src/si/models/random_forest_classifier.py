@@ -1,5 +1,6 @@
 import numpy as np
-from typing import Tuple, List, Union, Literal
+from typing import Tuple, List, Literal
+from scipy import stats
 from si.base.model import Model
 from si.data.dataset import Dataset
 from si.metrics.accuracy import accuracy
@@ -120,13 +121,8 @@ class RandomForestClassifier(Model):
         # Transpose predictions to shape (n_samples, n_trees)
         predictions = np.array(predictions).T
 
-        # get the most common prediction for each sample
-        final_predictions = [np.bincount(row).argmax() for row in predictions]
-
-        # If the labels are strings (like in the iris.csv), map back to original labels
-        if isinstance(dataset.y[0], str):
-            unique_labels = np.unique(dataset.y)
-            final_predictions = unique_labels[final_predictions]
+        # get the most common prediction for each sample - using stats.mode so that it can handle y that are strings
+        final_predictions = [stats.mode(row)[0][0] for row in predictions]
 
         return np.array(final_predictions)
 
