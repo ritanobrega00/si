@@ -30,9 +30,10 @@ def randomized_search_cv(model, dataset: Dataset, hyperparameter_grid: Dict[str,
     results = {'scores': [], 'hyperparameters': []}
 
     #Select a set of random combination of hyperparameters from all possibilities
-    random_combinations = [
-    {param: np.random.choice(values) for param, values in hyperparameter_grid.items()} for _ in range(n_iter)
-    ]
+    random_combinations = []
+    for _ in range(n_iter):
+        combination = {parameter: np.random.choice(values) for parameter, values in hyperparameter_grid.items()}
+        random_combinations.append(combination)
     
     for combination in random_combinations:
         # Set the parameteres for each random combination
@@ -40,7 +41,10 @@ def randomized_search_cv(model, dataset: Dataset, hyperparameter_grid: Dict[str,
             setattr(model, parameter, value)
 
         # Cross validate the model
+        print(f"Before CV: Dataset type: {type(dataset)}")
         score = k_fold_cross_validation(model=model, dataset=dataset, scoring=scoring, cv=cv)
+        print(f"After CV: Dataset type: {type(dataset)}")
+
         results['scores'].append(np.mean(score)) # Save the mean of the scores
         results['hyperparameters'].append(combination) #Save the hyperparameters
 
