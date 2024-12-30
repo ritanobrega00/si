@@ -40,7 +40,7 @@ class LassoRegression(Model):
         self.mean = None
         self.std = None
 
-    def _soft_threshold(self, rho: float, l1_penalty: float) -> float:
+    def soft_threshold(self, rho: float, l1_penalty: float) -> float:
         """
         Aim: computes the soft threshold value
         
@@ -125,7 +125,7 @@ class LassoRegression(Model):
         if self.scale:
             X = (dataset.X - self.mean) / self.std 
         else:
-            dataset.X
+            X = dataset.X
         # Predict y using the estimated theta and theta_zero and X.dot(theta) for matriz multiplication
         y_pred = X.dot(self.theta) + self.theta_zero
         return y_pred
