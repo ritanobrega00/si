@@ -121,8 +121,12 @@ class RandomForestClassifier(Model):
         # Transpose predictions to shape (n_samples, n_trees)
         predictions = np.array(predictions).T
 
-        # get the most common prediction for each sample - using stats.mode so that it can handle y that are strings
-        final_predictions = [stats.mode(row)[0][0] for row in predictions]
+        # get the most common prediction for each sample - using np.unique so that it can handle y that are strings
+        final_predictions = []
+        for row in predictions:
+            unique_labels, counts = np.unique(row, return_counts=True)
+            # Select the label with the maximum count
+            final_predictions.append(unique_labels[np.argmax(counts)])
 
         return np.array(final_predictions)
 
