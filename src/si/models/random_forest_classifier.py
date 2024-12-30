@@ -118,7 +118,7 @@ class RandomForestClassifier(Model):
             predictions.append(tree.predict(Dataset(subset_X, dataset.y)))
 
         # Transpose predictions to shape (n_samples, n_trees)
-        predictions = np.array(predictions).T
+        predictions = np.array(predictions, dtype=int).T
 
         # get the most common prediction for each sample
         final_predictions = [np.bincount(row).argmax() for row in predictions]
