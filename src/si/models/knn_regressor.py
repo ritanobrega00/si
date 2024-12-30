@@ -83,8 +83,6 @@ class KNNRegressor(Model):
         Returns:
         float -> error between predictions and actual values (rmse)  
         """
-        #get the prediction values (y_pred)
-        predictions = self._predict(dataset)
         #calculate the RMSE between the true and predicted values
         return rmse(dataset.y, predictions)
     
