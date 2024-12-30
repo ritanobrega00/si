@@ -101,7 +101,7 @@ class RidgeRegression(Model):
 
             # computing the residuals for feature j - measures how well the model fits the data for feature j,
             # excluding its current contribution
-            residuals = dataset.y - (y_pred - self.theta * X)
+            residuals = dataset.y - (y_pred - np.dot(X, self.theta))
 
             # updating the theta j using soft thresholding
 
