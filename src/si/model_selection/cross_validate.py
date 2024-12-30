@@ -28,6 +28,12 @@ def k_fold_cross_validation(model, dataset: Dataset, scoring: callable = None, c
     scores: List[float]
         The scores of the model on each fold.
     """
+        # Add this at the beginning of k_fold_cross_validation
+    print(f"Dataset X type: {type(dataset.X)}")
+    print(f"Dataset y type: {type(dataset.y)}")
+    print(f"Dataset X shape: {dataset.X.shape}")
+    print(f"Dataset y shape: {dataset.y.shape}")
+
     num_samples = dataset.X.shape[0]
     fold_size = num_samples // cv
     scores = []
