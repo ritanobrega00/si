@@ -140,5 +140,7 @@ class RandomForestClassifier(Model):
 
         Returns: float - The accuracy score
         """ 
+        self.fit(dataset)
+        predictions = self.predict(dataset)
         score = accuracy(dataset.y, predictions)
         return score
