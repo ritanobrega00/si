@@ -99,6 +99,12 @@ class RidgeRegression(Model):
             # predicted y
             y_pred = np.dot(X, self.theta) + self.theta_zero
 
+            # computing the residuals for feature j - measures how well the model fits the data for feature j,
+            # excluding its current contribution
+            residuals = dataset.y - (y_pred - self.theta * X)
+
+            # updating the theta j using soft thresholding
+
             # computing and updating the gradient with the learning rate
             gradient = (self.alpha / m) * np.dot(y_pred - dataset.y, X)
 
