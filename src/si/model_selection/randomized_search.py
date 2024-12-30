@@ -42,7 +42,7 @@ def randomized_search_cv(model, dataset: Dataset, hyperparameter_grid: Dict[str,
 
         # Cross validate the model
         print(f"Before CV: Dataset type: {type(dataset)}")
-        score = k_fold_cross_validation(model=model, dataset=dataset, scoring=scoring, cv=cv)
+        score = scoring(model=model, dataset=dataset, cv=cv)
         print(f"After CV: Dataset type: {type(dataset)}")
 
         results['scores'].append(np.mean(score)) # Save the mean of the scores
