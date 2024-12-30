@@ -50,7 +50,7 @@ class StackingClassifier(Model):
         Parameters: dataset: Dataset - The test data.
         Returns: np.ndarray - The predicted labels.
         """
-        final_predictions = self.final_model.predict(Dataset(self.base_predictions, dataset.y)) 
+        final_predictions = self.final_model.predict(Dataset(self.base_predictions, None)) 
         return final_predictions
 
     def _score(self, dataset: Dataset) -> float:
