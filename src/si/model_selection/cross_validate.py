@@ -56,6 +56,5 @@ def k_fold_cross_validation(model, dataset: Dataset, scoring: callable = None, c
             fold_score = scoring(dataset_test.y, model.predict(dataset_test))
         else:
             fold_score = model.score(dataset_test)
-        print("fold_score: ", fold_score)
         scores.append(fold_score)
     return scores
