@@ -53,7 +53,7 @@ class StackingClassifier(Model):
         final_predictions = self.final_model.predict(Dataset(self.base_predictions, None)) 
         return final_predictions
 
-    def _score(self, dataset: Dataset) -> float:
+    def _score(self, dataset: Dataset, predictions) -> float:
         """ 
         Aim: Compute the accuracy between predicted and real labels.
         Parameters: dataset: Dataset - The test data.
