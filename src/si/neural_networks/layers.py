@@ -214,7 +214,7 @@ class Dropout(Layer):
         return output_error * self.mask
 
     def output_shape(self) -> tuple:
-        output_shape = self.input_shape()
+        output_shape = self._input_shape 
         return output_shape
 
     def parameters(self) -> int:
