@@ -220,7 +220,7 @@ class Dropout(Layer):
     def parameters(self) -> int:
         return 0
 
-if __name__ = "__main__":
+if __name__ == "__main__":
     dropout_layer = Dropout()
     input_data = np.random.rand(5, 10)  # Random input of shape (5, 10)
 
