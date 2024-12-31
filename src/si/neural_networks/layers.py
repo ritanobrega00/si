@@ -214,38 +214,10 @@ class Dropout(Layer):
         return output_error * self.mask
 
     def output_shape(self) -> tuple:
-        output_shape = self._input_shape 
-        return output_shape
+        return self.input_shape()
 
     def parameters(self) -> int:
         return 0
 
 if __name__ == "__main__":
-    dropout_layer = Dropout()
-    input_data = np.random.rand(5, 10)  # Random input of shape (5, 10)
-
-    # Forward propagation during training
-    output_train = dropout_layer.forward_propagation(input_data, training=True)
-    print("Output during training:\n", output_train)
-
-    # Forward propagation during inference
-    output_inference = dropout_layer.forward_propagation(input_data, training=False)
-    print("\nOutput during inference:\n", output_inference)
-
-    # Backward propagation
-    error = np.ones_like(input_data)  # Dummy error for testing
-    input_error = dropout_layer.backward_propagation(error)
-    print("\nInput error during backpropagation:\n", input_error)
-
-    # Output shape that shpuld be the same as the input shape
-    if dropout_layer.output_shape() == input_data.shape:
-        print("\nOutput shape is correct")
-    else:
-        print("\nSomething is wrong: Output shape is incorrect")
-
-    # Parameters of the dropout layer - should be 0
-    if dropout_layer.parameters() == 0:
-        print("\nParameters: 0")
-    else:
-        print("\nSomething is wrong: dropout layers do not have learnable parameters")
-
+    pass
