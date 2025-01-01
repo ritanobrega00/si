@@ -1,11 +1,9 @@
 import sys
 import os 
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
-from datasets import DATASETS_PATH
 
 import unittest 
-
+from datasets import DATASETS_PATH
 from si.feature_selection.select_k_best import SelectKBest
 from si.io.csv_file import read_csv
 from si.statistics.f_classification import f_classification

@@ -1,14 +1,15 @@
-from unittest import TestCase
-
-from datasets import DATASETS_PATH
-
+import sys
 import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
+import unittest
+from datasets import DATASETS_PATH
 
 from si.io.data_file import read_data_file
 from si.model_selection.split import train_test_split
 from si.neural_networks.activation import ReLUActivation, SigmoidActivation
 
-class TestSigmoidLayer(TestCase):
+class TestSigmoidLayer(unittest.TestCase):
 
     def setUp(self):
         
@@ -32,7 +33,7 @@ class TestSigmoidLayer(TestCase):
         self.assertEqual(derivative.shape[1], self.dataset.X.shape[1])
 
 
-class TestRELULayer(TestCase):
+class TestRELULayer(unittest.TestCase):
 
     def setUp(self):
         
@@ -54,3 +55,6 @@ class TestRELULayer(TestCase):
         derivative = sigmoid_layer.derivative(self.dataset.X)
         self.assertEqual(derivative.shape[0], self.dataset.X.shape[0])
         self.assertEqual(derivative.shape[1], self.dataset.X.shape[1])
+
+if __name__ == '__main__':
+    unittest.main()
