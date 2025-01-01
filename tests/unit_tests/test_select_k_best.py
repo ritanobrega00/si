@@ -1,13 +1,12 @@
-from unittest import TestCase
-from datasets import DATASETS_PATH
-
+import unittest 
+from ...datasets import DATASETS_PATH
 import os
 from si.feature_selection.select_k_best import SelectKBest
 from si.io.csv_file import read_csv
 
 from si.statistics.f_classification import f_classification
 
-class TestSelectKBest(TestCase):
+class TestSelectKBest(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'iris', 'iris.csv')
@@ -30,3 +29,6 @@ class TestSelectKBest(TestCase):
 
         self.assertLess(len(new_dataset.features), len(self.dataset.features))
         self.assertLess(new_dataset.X.shape[1], self.dataset.X.shape[1])
+
+if __name__ == '__main__':
+    unittest.main()
