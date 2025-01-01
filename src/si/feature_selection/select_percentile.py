@@ -26,12 +26,9 @@ class SelectPercentile(Transformer):
         """
         self.score_func = score_func
         self.percentile = percentile
+        #if the percentile is 0, no features are selected, so it raises an error
         if self.percentile == 0:
             raise ValueError("Cannot perform percentile selection with a percentile of 0%.")
-        
-        #if the dataset only has one feature, an error is raised
-        elif len(dataset.features) == 1:
-            raise ValueError("Cannot perform percentile selection with a single feature.")
         self.F = None
         self.p = None
 
@@ -41,8 +38,12 @@ class SelectPercentile(Transformer):
         Parameters: dataset (object Dataset)
         Returns self (the fitted SelectPercentile object)
         """        
-        self.F, self.p = self.score_func(dataset)
-        return self
+        #if the dataset only has one feature, an error is raised
+        if len(dataset.features) == 1:
+            raise ValueError("Cannot perform percentile selection with a single feature.")
+        else:
+            self.F, self.p = self.score_func(dataset)
+            return self
 
     def _transform(self, dataset: Dataset) -> Dataset:
         """
@@ -53,17 +54,15 @@ class SelectPercentile(Transformer):
         #Check if fit has been called before
         if self.F is None:
             raise ValueError("The transformer must be fitted before calling transform.")
-
-        # number of features to select based on the percentile
-        #if the percentile is 0, no features are selected, so it raises an error
-
+        
+        num_features = int(len(self.F) * (self.percentile / 100))  # number of features to select based on the percentile
+        # if the percentile is too low to select any features, an error is raised
+        if num_features < 1:
+            raise ValueError("Percentile too low to select any features.")
         # Since you cannot select a decimal number of features, the result is usually rounded down
         else:
-            print(self.percentile, len(self.F), len(self.F) * (self.percentile / 100))
-            num_features = int(len(self.F) * (self.percentile / 100)) # number of features to select based on the percentile
             top_indices = np.argsort(self.F)[-num_features:]  #indices of the features with higher F value
             new_dataset = Dataset(X=dataset.X[:, top_indices], y=dataset.y, features=[dataset.features[i] for i in top_indices])
-            print(new_dataset.features)
             return new_dataset
     
 if __name__ == '__main__':

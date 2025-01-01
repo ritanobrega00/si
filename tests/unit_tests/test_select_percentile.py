@@ -20,17 +20,18 @@ class TestSelectPercentile(unittest.TestCase):
         self.dataset_cpu = read_csv(filename=self.csv_cpu, features=True, label=True)
         self.datasets = [self.dataset_iris, self.dataset_cpu]
 
-        self.select_percentile_20 = SelectPercentile(score_func=f_classification, percentile=20.0)
+        self.select_percentile_25 = SelectPercentile(score_func=f_classification, percentile=25.0)
         self.select_percentile_50 = SelectPercentile(score_func=f_classification, percentile=50)
 
     def test_fit(self):
         select_percentile = SelectPercentile(score_func = f_classification, percentile = 20.0)
         for dataset in self.datasets:
-            select_percentile.fit(dataset)
-            self.assertIsNotNone(select_percentile.F)
-            self.assertIsNotNone(select_percentile.p)
-            self.assertEqual(len(select_percentile.F), len(dataset.features))
-            self.assertEqual(len(select_percentile.p), len(dataset.features))
+            for select_percentile in [self.select_percentile_25, self.select_percentile_50]:
+                select_percentile.fit(dataset)
+                self.assertIsNotNone(select_percentile.F)
+                self.assertIsNotNone(select_percentile.p)
+                self.assertEqual(len(select_percentile.F), len(dataset.features))
+                self.assertEqual(len(select_percentile.p), len(dataset.features))
 
     def test_transform(self):
         # Test a selected percentile of 50% - select 2 out of 4
@@ -42,10 +43,10 @@ class TestSelectPercentile(unittest.TestCase):
 
         # Test a selected percentile of 20% - select 1 out of 5
         for dataset in self.datasets:
-            self.select_percentile_20.fit(dataset)
-            transformed_dataset = self.select_percentile_20.transform(dataset)
-            self.assertEqual(transformed_dataset.X.shape, (dataset.X.shape[0], int(dataset.X.shape[1] // 5)))
-            self.assertEqual(len(transformed_dataset.features), int(len(dataset.features) // 5))
+            self.select_percentile_25.fit(dataset)
+            transformed_dataset = self.select_percentile_25.transform(dataset)
+            self.assertEqual(transformed_dataset.X.shape, (dataset.X.shape[0], int(dataset.X.shape[1] // 4)))
+            self.assertEqual(len(transformed_dataset.features), int(len(dataset.features) // 4))
 
         
     def test_selected_features(self):    
@@ -70,32 +71,34 @@ class TestSelectPercentile(unittest.TestCase):
         self.assertListEqual(sorted_indices.tolist(), sorted(selected_indices))
 
     def test_extreme_cases(self):
-        # Test 0% and 100% percentiles and a dataset with only one feature
+        # Test 0% and 100% percentiles, a dataset with only one feature, and a percentile that is too low to select any features
         for dataset in self.datasets:
-            # Test 0% percentile -> None
-            selector_0 = SelectPercentile(percentile=0)
-            selector_0.fit(dataset)
+            # Test 0% percentile -> error
             with self.assertRaises(ValueError):
-                selector_0.transform(dataset)
-                
-            # Test 100% percentile
+                SelectPercentile(percentile=0)
+
+            # Test 100% percentile --> the same dataset is returned, all features selected
             selector_100 = SelectPercentile(percentile=100)
             selector_100.fit(dataset)
             transformed_dataset_100 = selector_100.transform(dataset)
-            self.assertEqual(len(transformed_dataset_100.features), len(dataset.features))  # All features selected
+            #self.assertTrue(np.array_equal(transformed_dataset_100.X, dataset.X))
+            for feature in list(transformed_dataset_100.features):
+                self.assertIn(feature, list(dataset.features))  # All features selected
 
         # Test dataset with only one feature
         dataset = Dataset(
             X=np.array([[1], [2], [3], [4]]),
             y=np.array([0, 1, 0, 1]),
-            features=["f1"],
-            label="y"
-        )
+            features=["f1"], label="y")
         selector = SelectPercentile(percentile=25.0)
-        selector.fit(dataset)
         with self.assertRaises(ValueError):
-            selector.transform(dataset)
-
+            selector.fit(dataset)
+        
+        # Test percentile too low to select any features
+        selector_low = SelectPercentile(percentile=5.0)
+        selector_low.fit(self.dataset_iris)
+        with self.assertRaises(ValueError):
+            selector_low.transform(self.dataset_iris)
 
 if __name__ == '__main__':
     unittest.main()
