@@ -194,7 +194,9 @@ class TanhActivation(ActivationLayer):
         """
         outputs = (np.exp(input) - np.exp(-input)) / (np.exp(input) + np.exp(-input))
         #As the values must be between -1 and 1 and sum to 1, it will be added a checking to ensure that
-        if np.all(output >= -1 and output <= 1 for output in outputs):
+        if not np.all((outputs >= -1) & (outputs <= 1)):
+            raise ValueError("Output values must be between -1 and 1.")
+        else:    
             return outputs
 
     def derivative(self, input: np.ndarray) -> np.ndarray:
@@ -227,10 +229,11 @@ class SoftmaxActivation(ActivationLayer):
         exp_values = np.exp(input - np.max(input, axis=-1, keepdims=True))
         outputs = exp_values / np.sum(exp_values, axis=-1, keepdims=True)
         #As the values must be between 0 and 1 and sum to 1, it will be added a checking to ensure that
-        if sum(outputs) == 1 and np.all(output >= 0 and output <= 1 for output in outputs):
-            return outputs
-        else:
-            raise ValueError("Something is wrong: The output values must be between 0 and 1 and sum to 1")
+        if not np.all((outputs >= 0) & (outputs <= 1)):
+            raise ValueError("Output values must be between 0 and 1.")
+        if not np.allclose(np.sum(outputs, axis=-1), 1):
+            raise ValueError("Output values must sum to 1 across each row.")
+        
 
     def derivative(self, input: np.ndarray) -> np.ndarray:
         """
