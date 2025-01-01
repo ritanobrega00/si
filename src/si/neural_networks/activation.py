@@ -143,7 +143,7 @@ class SigmoidActivation(ActivationLayer):
 
 class ReLUActivation(ActivationLayer):
     """
-    ReLU activation function.
+    ReLU activation function
     """
 
     def activation_function(self, input: np.ndarray):
@@ -180,7 +180,8 @@ class ReLUActivation(ActivationLayer):
 
 class TanhActivation(ActivationLayer):
     """
-    Tanh activation function.
+    Tanh activation function - applies the tanh function to its input
+    It is often used in neural networks to squash the values into a range between -1 and 1
     """
 
     def activation_function(self, input: np.ndarray) -> np.ndarray:
@@ -191,59 +192,48 @@ class TanhActivation(ActivationLayer):
 
         Returns: a numpy.ndarray - The output of the layer
         """
-        return np.tanh(input)
+        output = np.exp(input) - np.exp(-input) / np.exp(input) + np.exp(-input)
+        return output
 
     def derivative(self, input: np.ndarray) -> np.ndarray:
         """
         Aim: Derivative of the Tanh activation function.
 
-        Parameters
-        ----------
-        input: numpy.ndarray
-            The input to the layer.
+        Parameters: input - a numpy.ndarray - The input to the layer.
 
-        Returns
-        -------
-        numpy.ndarray
-            The derivative of the activation function.
+        Returns: a numpy.ndarray - derivate = 1- self.activation_function(input) ** 2
         """
-        return 1 - np.tanh(input) ** 2
+        derivative = 1- self.activation_function(input) ** 2
+        return derivative
     
 class SoftmaxActivation(ActivationLayer):
     """
-    Softmax activation function.
+    Softmax activation function - transforms the raw output scores into a probability distribution 
+    (that sums to 1), making it suitable for multi-class classification problems
     """
 
     def activation_function(self, input: np.ndarray) -> np.ndarray:
         """
         Softmax activation function.
 
-        Parameters
-        ----------
-        input: numpy.ndarray
-            The input to the layer.
+        Parameters: input - a numpy.ndarray - The input to the layer.
 
-        Returns
-        -------
-        numpy.ndarray
-            The output of the layer.
+        Returns: a numpy.ndarray - The output of the layer - range between 0 and 1
         """
-        exp_values = np.exp(input - np.max(input, axis=-1, keepdims=True))
-        return exp_values / np.sum(exp_values, axis=-1, keepdims=True)
+        outputs = np.exp(input - np.max(input, axis=-1, keepdims=True))
+        #As the values must be between 0 and 1 and sum to 1, it will be added a checking to ensure that
+        if sum(outputs) == 1 and all(output >= 0 and output <= 1 for output in outputs):
+            return outputs
+        else:
+            raise ValueError("Something is wrong: The output values must be between 0 and 1 and sum to 1")
 
     def derivative(self, input: np.ndarray) -> np.ndarray:
         """
         Derivative of the Softmax activation function.
 
-        Parameters
-        ----------
-        input: numpy.ndarray
-            The input to the layer.
+        Parameters: input - a numpy.ndarray - The input to the layer.
 
-        Returns
-        -------
-        numpy.ndarray
-            The derivative of the activation function.
+        Returns: a numpy.ndarray - The derivative = self.activation_function(input) * (1 - self.activation_function(input))
         """
-        softmax = self.activation_function(input)
-        return softmax * (1 - softmax)
+        derivative = self.activation_function(input) * (1 - self.activation_function(input))
+        return derivative
