@@ -1,8 +1,7 @@
-import sys
 import os 
+from datasets import DATASETS_PATH 
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
-from datasets import DATASETS_PATH
+print(DATASETS_PATH)
 
 import unittest
 
