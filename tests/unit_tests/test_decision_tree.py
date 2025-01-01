@@ -1,8 +1,10 @@
 from unittest import TestCase
 
-from datasets import DATASETS_PATH
+import sys
+import os 
 
-import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+from datasets import DATASETS_PATH
 
 from si.io.data_file import read_data_file
 from si.model_selection.split import train_test_split

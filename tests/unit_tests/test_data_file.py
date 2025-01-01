@@ -1,13 +1,15 @@
-from unittest import TestCase
+import unittest 
 
+import sys
+import os 
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 from datasets import DATASETS_PATH
-
-import os
 
 from si.io.data_file import read_data_file, write_data_file
 
 
-class TestDataFile(TestCase):
+class TestDataFile(unittest.TestCase):
 
     def setUp(self):
         self.data_filename = os.path.join(DATASETS_PATH, 'breast_bin', 'breast-bin.data')
@@ -43,3 +45,6 @@ class TestDataFile(TestCase):
         self.assertEqual(dataset.shape(), dataset2.shape())
         self.assertEqual(dataset.has_label(), dataset2.has_label())
         os.remove('test.data')
+
+if __name__ == '__main__':
+    unittest.main()

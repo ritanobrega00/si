@@ -1,12 +1,15 @@
-import os
-from unittest import TestCase
+import sys
+import os 
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 from datasets import DATASETS_PATH
+
+import unittest
 
 from si.io.csv_file import read_csv, write_csv
 
 
-class TestCSVFile(TestCase):
+class TestCSVFile(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'iris', 'iris.csv')
@@ -66,3 +69,6 @@ class TestCSVFile(TestCase):
         self.assertEqual(dataset.has_label(), dataset2.has_label())
         self.assertEqual(dataset.get_classes().tolist(), dataset2.get_classes().tolist())
         os.remove('test.csv')
+
+if __name__ == '__main__':
+    unittest.main()
