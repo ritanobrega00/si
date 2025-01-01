@@ -169,12 +169,7 @@ class Dataset:
             inds = np.where(np.isnan(self.X))
             self.X[inds] = np.take(medians, inds[1])
         else:
-            raise ValueError("Invalid value parameter. Use a float, 'mean', or 'median'.")
-        
-        # Check if any NaN values remain
-        if np.isnan(self.X).any():
-            raise ValueError("NaN values remain in the dataset after replacement.")
-            
+            raise ValueError("Invalid value parameter. Use a float, 'mean', or 'median'.")            
         return self
     
     def remove_by_index(self, index: int) -> 'Dataset':
