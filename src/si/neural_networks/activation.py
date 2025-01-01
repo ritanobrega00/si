@@ -233,7 +233,8 @@ class SoftmaxActivation(ActivationLayer):
             raise ValueError("Output values must be between 0 and 1.")
         if not np.allclose(np.sum(outputs, axis=-1), 1):
             raise ValueError("Output values must sum to 1 across each row.")
-        
+        else: 
+            return outputs        
 
     def derivative(self, input: np.ndarray) -> np.ndarray:
         """
