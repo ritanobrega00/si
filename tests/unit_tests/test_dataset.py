@@ -4,7 +4,6 @@ import numpy as np
 
 from si.data.dataset import Dataset
 
-
 class TestDataset(unittest.TestCase):
 
     def test_dataset_construction(self):
@@ -29,3 +28,6 @@ class TestDataset(unittest.TestCase):
         dataset = Dataset.from_random(10, 5, 3, features=['a', 'b', 'c', 'd', 'e'], label='y')
         self.assertEqual((10, 5), dataset.shape())
         self.assertTrue(dataset.has_label())
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
