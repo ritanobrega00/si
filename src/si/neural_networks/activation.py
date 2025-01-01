@@ -227,7 +227,7 @@ class SoftmaxActivation(ActivationLayer):
         exp_values = np.exp(input - np.max(input, axis=-1, keepdims=True))
         outputs = exp_values / np.sum(exp_values, axis=-1, keepdims=True)
         #As the values must be between 0 and 1 and sum to 1, it will be added a checking to ensure that
-        if sum(outputs, axis = -1) == 1 and np.all(output >= 0 and output <= 1 for output in outputs):
+        if sum(outputs) == 1 and np.all(output >= 0 and output <= 1 for output in outputs):
             return outputs
         else:
             raise ValueError("Something is wrong: The output values must be between 0 and 1 and sum to 1")
