@@ -1,6 +1,5 @@
 import numpy as np
 from typing import Tuple, List, Literal
-from scipy import stats
 from si.base.model import Model
 from si.data.dataset import Dataset
 from si.metrics.accuracy import accuracy
