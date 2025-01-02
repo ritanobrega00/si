@@ -10,7 +10,7 @@ using eigenvalue decomposition of the covariance matrix
     
     Estimated parameters:
     mean: array, shape (n_features,) - mean of the samples
-    components: array, shape (n_features, n_components) - the principal components (a matrix where each row is an
+    components: array, shape (n_components, n_features) - the principal components (a matrix where each row is an
 eigenvector corresponding to a principal component)
     explained_variance: array, shape (n_components,) - the amount of variance explained by each principal
 component (it's a vector of eigenvalues)
@@ -20,10 +20,13 @@ component (it's a vector of eigenvalues)
     _transform – calculates the reduced dataset using the principal components
     """
     def __init__(self, n_components:int):
+        if n_components <= 0:
+            raise ValueError("n_components must be greater than 0.")
         self.n_components = n_components
         self.mean = None
         self.components = None
         self.explained_variance = None
+        self.X_normalized =False
 
     def _fit(self, X: np.array, normalization:bool=False) -> None:
         """
@@ -34,24 +37,22 @@ component (it's a vector of eigenvalues)
         Therefore if the user wants to normalize the data, one of the parameters will be normalization = True (otherwise it will just be centered)
         If this parameter equals True, there will be an extra step to scale the data to have a unit variance for each feature 
         """
-        if self.n_components <= 0 or self.n_components > X.shape[1]:
+        if self.n_components > X.shape[1]:
             raise ValueError(f"n_components must be in the range (0, {X.shape[1]}].")
 
         # Centering the data (get the mean and subtract it from the data for each feature)
         self.mean = np.mean(X, axis=0) #axis=0 means that we are calculating the mean for each feature
         X_centered = X - self.mean
-        self.X_centered = X_centered
 
         # Normalizing the data (scaling the data by dividing it by the standard deviation of each feature)
         if normalization:
-            X_normalized = X_centered / np.std(X, axis=0)
-            X_to_use = X_normalized
-            self.X_normalized = X_normalized
+            X_centered /= np.std(X, axis=0)
+            self.X_normalized = True
         else:
-            X_to_use = X_centered
+            self.X_normalized = False
         
         # Calculation of the covariance matrix of the centered data
-        covariance_matrix = np.cov(X_to_use, rowvar=False) # rowvar=False means that the columns are the variables and rows are samples
+        covariance_matrix = np.cov(X_centered, rowvar=False) # rowvar=False means that the columns are the variables and rows are samples
         # Eigenvalue decomposition on the covariance matrix
         eigenvalues, eigenvectors = np.linalg.eig(covariance_matrix)
 
@@ -59,27 +60,29 @@ component (it's a vector of eigenvalues)
         idx = np.argsort(eigenvalues)[::-1] #sorting in descending order to get the indices of the highest eigenvalues
         eigenvalues = eigenvalues[idx]      #reordering the eigenvalues
         eigenvectors = eigenvectors[:, idx] #reordering the columns of the eigenvectors matrix to match the eigenvalues
-        self.components = eigenvectors[:, :self.n_components] #selecting the first n_components eigenvectors that become the principal components
+        # Store the first n_components eigenvectors that become the principal components
+        self.components = eigenvectors[:, :self.n_components].T
 
         # Infer the explained variance (dividing the eigenvalue by the sum of all eigenvalues)
         total_variance = np.sum(eigenvalues)
         self.explained_variance = eigenvalues[:self.n_components] / total_variance
 
 
-    def _transform(self, X: np.array, normalization:bool=False) -> np.array:
+    def _transform(self, X: np.array) -> np.array:
         # as the transform method is going to use the stored estimated parameters from the fit method
         # We perform a check to ensure that the fit method has been called before calling the transform
         if self.mean is None or self.components is None:
-            raise AssertionError("PCA has not been fitted. Call fit() before transform().")
+            raise RuntimeError("PCA has not been fitted. Call fit() before transform().")
         
         # Centering the data
-        #X_centered = X - self.mean
+        X_centered = X - self.mean
 
-        # Reduction of X to the principal components = X * matrix of principal components
-        if normalization == True:
-            X_reduced = np.dot(self.X_normalized, self.components)
-        else:
-            X_reduced = np.dot(self.X_centered, self.components)
+        #if the normalization has been selected in the fit method
+        if self.X_normalized:
+            X_centered /= np.std(X, axis=0)
+        
+        # Reduction of X to the principal components = X * matrix of principal components   
+        X_reduced = np.dot(X_centered, self.components.T)
         return X_reduced
     
 if __name__ == "__main__":
@@ -95,12 +98,14 @@ if __name__ == "__main__":
     iris_dataset = read_csv(filename=csv_iris, features=True, label=True)
     pca_norm = PCA(n_components=2)
     pca_norm._fit(iris_dataset.X, normalization=True)
-    X_transformed_norm = pca_norm._transform(iris_dataset.X, normalization=True)
+    X_transformed_norm = pca_norm._transform(iris_dataset.X)
     print('Explained variance (normalized data):', pca_norm.explained_variance)
     print('Transformed data structure (normalized data):', X_transformed_norm.shape)
+    print('Components (normalized data):', pca_norm.components)
 
     pca = PCA(n_components=2)
     pca._fit(iris_dataset.X)
     X_transformed = pca._transform(iris_dataset.X)
     print('Explained variance with data not normalized:', pca.explained_variance)
     print('Transformed data structure with data not normalized:', X_transformed.shape)
+    print('Components (not normalized data):', pca.components)
