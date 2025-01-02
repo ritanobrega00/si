@@ -14,7 +14,7 @@ class TestCosineDistance(unittest.TestCase):
             for samples in self.y:
                 custom_distance = cosine_distance(sample, samples)
                 sklearn_distance = cosine_distances(sample.reshape(1, -1) , samples)
-                assert np.allclose(custom_distance, sklearn_distance)
+                self.assertTrue(np.allclose(custom_distance, sklearn_distance))
 
     def test_cosine_distance_with_zeros(self):
         x = np.array([0, 0, 0])
@@ -27,7 +27,7 @@ class TestCosineDistance(unittest.TestCase):
         y = np.array([[1, 2, 3], [-4, -5, -6]])
         result = cosine_distance(x, y)
         sklearn_distance = cosine_distances(x.reshape(1, -1), y)
-        assert np.allclose(result, sklearn_distance)
+        self.assertTrue(np.allclose(result, sklearn_distance))
 
 if __name__ == '__main__':
     unittest.main()
