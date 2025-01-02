@@ -1,5 +1,9 @@
-import os
-from unittest import TestCase
+import sys
+import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
+import unittest 
+from datasets import DATASETS_PATH
 from si.io.csv_file import read_csv
 from si.io.data_file import read_data_file
 from si.metrics.mse import mse
@@ -12,7 +16,7 @@ from si.neural_networks.neural_network import NeuralNetwork
 from si.neural_networks.optimizers import SGD
 
 
-class TestLosses(TestCase):
+class TestLosses(unittest.TestCase):
 
     def setUp(self):
         
@@ -39,3 +43,6 @@ class TestLosses(TestCase):
         out = net.predict(self.train_dataset)
 
         self.assertEqual(out.shape[0], self.train_dataset.shape()[0])
+
+if __name__ == '__main__':
+    unittest.main()

@@ -6,7 +6,6 @@ import unittest
 import numpy as np
 from datasets import DATASETS_PATH
 from si.io.data_file import read_data_file
-from si.metrics.accuracy import accuracy
 from si.model_selection.grid_search_cv import grid_search_cv
 from si.models.logistic_regression import LogisticRegression
 
