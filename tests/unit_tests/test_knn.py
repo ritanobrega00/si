@@ -1,18 +1,17 @@
-from unittest import TestCase
+import sys
+import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-import numpy as np
-
-
+import unittest 
 from datasets import DATASETS_PATH
-
-import os
+import numpy as np
 from si.io.csv_file import read_csv
 
 from si.models.knn_classifier import KNNClassifier
 
 from si.model_selection.split import train_test_split
 
-class TestKNN(TestCase):
+class TestKNN(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'iris', 'iris.csv')
@@ -45,3 +44,6 @@ class TestKNN(TestCase):
         knn.fit(train_dataset)
         score = knn.score(test_dataset)
         self.assertEqual(score, 1)
+
+if __name__ == '__main__':
+    unittest.main()
