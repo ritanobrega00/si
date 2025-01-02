@@ -1,9 +1,10 @@
-from unittest import TestCase
+import sys
+import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
+import unittest 
+import numpy as np
 from datasets import DATASETS_PATH
-
-import os
-
 from si.io.data_file import read_data_file
 from si.metrics.accuracy import accuracy
 from si.model_selection.grid_search_cv import grid_search_cv
@@ -11,7 +12,7 @@ from si.models.logistic_regression import LogisticRegression
 
 import numpy as np
 
-class TestGridSearchCV(TestCase):
+class TestGridSearchCV(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'breast_bin', 'breast-bin.csv')
@@ -45,3 +46,6 @@ class TestGridSearchCV(TestCase):
         # get the best score
         best_score = results_['best_score']
         self.assertEqual(np.round(best_score, 2), 0.97)
+
+if __name__ == '__main__':
+    unittest.main()

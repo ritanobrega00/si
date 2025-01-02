@@ -5,7 +5,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 import unittest 
 import numpy as np
 from datasets import DATASETS_PATH
-from si.data.dataset import Dataset
 from si.io.csv_file import read_csv
 
 from si.model_selection.split import train_test_split
