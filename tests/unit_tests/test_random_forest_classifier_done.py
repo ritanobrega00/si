@@ -6,11 +6,8 @@ import unittest
 import numpy as np
 from datasets import DATASETS_PATH
 
-from si.io.data_file import read_data_file
 from si.io.csv_file import read_csv
 from si.model_selection.split import train_test_split
-from si.data.dataset import Dataset
-from si.metrics.accuracy import accuracy
 from si.models.decision_tree_classifier import DecisionTreeClassifier 
 from si.models.random_forest_classifier import RandomForestClassifier
 
