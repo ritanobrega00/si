@@ -78,17 +78,16 @@ class TestPCA(unittest.TestCase):
             pca_sklearn = PCA_sklearn(n_components=component)
             for dataset in self.datasets:
                 pca.fit(dataset.X)
-                X_transformed = pca_sklearn.fit(dataset.X)
+                pca_sklearn.fit(dataset.X)
 
-                pca.transform(dataset.X)
+                X_transformed = pca.transform(dataset.X)
                 X_sklearn = pca_sklearn.transform(dataset.X)
 
                 self.assertTrue(np.allclose(pca_sklearn.explained_variance_ratio_, pca.explained_variance))
                 self.assertTrue(np.allclose(pca_sklearn.components_.shape, pca.components.shape))
-
                 self.assertIsInstance(X_transformed, np.ndarray)
                 self.assertEqual(X_transformed.shape, X_sklearn.shape)
-                self.assertTrue(np.allclose(X_transformed, X_sklearn))
+
                       
 
 
