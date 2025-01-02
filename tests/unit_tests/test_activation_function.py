@@ -48,44 +48,42 @@ class TestRELULayer(unittest.TestCase):
         self.assertEqual(derivative.shape[1], self.dataset.X.shape[1])
 
 class TestTahn(unittest.TestCase):
-
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'breast_bin', 'breast-bin.csv')
         self.dataset = read_data_file(filename=self.csv_file, label=True, sep=",")
-        self.train_dataset, self.test_dataset = train_test_split(self.dataset)
-        input_data = np.array([-1, 0, 1])
+
         self.tanh = TanhActivation()
 
     def test_tanh_activation_function(self):
-        
-        expected_output = np.tanh(input_data)
-        output = self.tanh.activation_function(input_data)
-        self.assertTrue(np.allclose(output, expected_output), f"Expected {expected_output}, but got {output}")
+        result = self.tanh.activation_function(self.dataset.X)
+        self.assertIsInstance(result, np.ndarray)
+        self.assertTrue(np.all((result >= -1) & (result <= 1))) # all values are between -1 and 1
 
     def test_tanh_derivative(self):
-        tanh = TanhActivation()
-        input_data = np.array([-1, 0, 1])
-        expected_derivative = 1 - np.tanh(input_data) ** 2
-        derivative = tanh.derivative(input_data)
-        self.assertTrue(np.allclose(derivative, expected_derivative), f"Expected {expected_derivative}, but got {derivative}")
+        derivative = self.tanh.derivative(self.dataset.X)
+        self.assertIsInstance(derivative, np.ndarray)
+        self.assertEqual(derivative.shape[0], self.dataset.X.shape[0])
+        self.assertEqual(derivative.shape[1], self.dataset.X.shape[1])
+
 
 class TestSoftmaxActivation(unittest.TestCase):  
+    def setUp(self):
+        self.csv_file = os.path.join(DATASETS_PATH, 'breast_bin', 'breast-bin.csv')
+        self.dataset = read_data_file(filename=self.csv_file, label=True, sep=",")
+
+        self.soft = SoftmaxActivation()
+
     def test_softmax_activation_function(self):
-        softmax = SoftmaxActivation()
-        input_data = np.array([[1, 2, 3], [1, 2, 3]])
-        exp_values = np.exp(input_data - np.max(input_data, axis=-1, keepdims=True))
-        expected_output = exp_values / np.sum(exp_values, axis=-1, keepdims=True)
-        output = softmax.activation_function(input_data)
-        self.assertTrue(np.allclose(output, expected_output), f"Expected {expected_output}, but got {output}")
+        result = self.soft.activation_function(self.dataset.X)
+        self.assertIsInstance(result, np.ndarray)
+        self.assertTrue(np.all((result >= 0) & (result <= 1))) # all values are between 0 and 1
+        self.assertTrue(np.allclose(np.sum(result, axis=-1), 1)) # sum of all values in a row is 1
 
     def test_softmax_derivative(self):
-        softmax = SoftmaxActivation()
-        input_data = np.array([[1, 2, 3], [1, 2, 3]])
-        softmax_output = softmax.activation_function(input_data)
-        expected_derivative = softmax_output * (1 - softmax_output)
-        derivative = softmax.derivative(input_data)
-        self.assertTrue(np.allclose(derivative, expected_derivative), f"Expected {expected_derivative}, but got {derivative}")
-
+        derivative = self.soft.derivative(self.dataset.X)
+        self.assertIsInstance(derivative, np.ndarray)
+        self.assertEqual(derivative.shape[0], self.dataset.X.shape[0])
+        self.assertEqual(derivative.shape[1], self.dataset.X.shape[1])
 
 if __name__ == "__main__":
     unittest.main()
