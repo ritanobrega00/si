@@ -26,6 +26,9 @@ def randomized_search_cv(model, dataset: Dataset, hyperparameter_grid: Dict[str,
     for parameter in hyperparameter_grid:
         if not hasattr(model, parameter):
             raise AttributeError(f"Model {model} does not have parameter {parameter}.")
+    
+    if n_iter <= 0:
+        return {'scores': [], 'hyperparameters': [], 'best_hyperparameters': None, 'best_score': None}
 
     results = {'scores': [], 'hyperparameters': []}
 
