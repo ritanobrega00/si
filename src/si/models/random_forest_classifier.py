@@ -81,6 +81,8 @@ class RandomForestClassifier(Model):
         # Define the maximum number of features if not explicitly provided
         if self.max_features is None:
             self.max_features = int(np.sqrt(n_features))  # Standard practice for classification problems
+        elif self.max_features > n_features:
+            raise ValueError(f"max_features must be less than or equal to the number of features in the dataset ({n_features})")
 
         # Create an iteration to apply to all the trees in the forest
         for _ in range(self.n_estimators):
