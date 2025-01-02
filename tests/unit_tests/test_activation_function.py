@@ -7,8 +7,7 @@ from datasets import DATASETS_PATH
 import numpy as np
 from si.io.data_file import read_data_file
 from si.model_selection.split import train_test_split
-from si.neural_networks.activation import ReLUActivation, SigmoidActivation, TanhActivation, SoftmaxActivation
-
+from si.neural_networks.activation import ReLUActivation, SigmoidActivation, TanhActivation, SoftmaxActivation  
 class TestSigmoidLayer(unittest.TestCase):
 
     def setUp(self):
