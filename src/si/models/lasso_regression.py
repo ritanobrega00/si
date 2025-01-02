@@ -39,6 +39,7 @@ class LassoRegression(Model):
         self.theta_zero = None
         self.mean = None
         self.std = None
+        self.cost_history = {}
 
     def soft_threshold(self, rho: float, l1_penalty: float) -> float:
         """
@@ -107,16 +108,15 @@ class LassoRegression(Model):
                 # Update theta_j using soft-thresholding
                 self.theta[j] = self.soft_threshold(rho, self.l1_penalty) / np.sum(X[:, j]**2)
 
-            # Compute the cost
+            # compute the cost
             self.cost_history[i] = self.cost(dataset)
 
-            #Check early stopping
             if i > 0 and self.cost_history[i] > self.cost_history[i - 1]:
                 early_stopping += 1
             else:
                 early_stopping = 0
-
             i += 1
+
 
         return self
     
@@ -130,12 +130,19 @@ class LassoRegression(Model):
         y_pred = X.dot(self.theta) + self.theta_zero
         return y_pred
     
-    def _score(self, dataset: Dataset) -> float:
+    def _score(self, dataset: Dataset, predictions) -> float:
         #Predict y using the predict method
-        y_pred = self._predict(dataset)
+        predictions = self._predict(dataset)
         #Calculate the mse score (error between the predicted and real y values)
-        score = mse(dataset.y, y_pred)
-        return score
+        return mse(dataset.y, predictions)
+
+    def cost(self, dataset: Dataset) -> float:
+        """
+        Compute the cost function J(θ) for Lasso Regression.
+        """
+        y_pred = self._predict(dataset)
+        return (np.sum((dataset.y - y_pred) ** 2) / (2 * len(dataset.y)) + self.l1_penalty * np.sum(np.abs(self.theta)))
+
     
     if __name__ == '__main__':
         from si.data.dataset import Dataset
@@ -149,14 +156,10 @@ class LassoRegression(Model):
         # fit the model
         model = LassoRegression(l1_penalty=1.0, scale=True)
         model.fit(dataset)
-
-        # get coefs
+        y_pred_ = model.predict(Dataset(X=np.array([[3, 5]])))
         print(f"Parameters: {model.theta}")
 
-        # compute the score
         score = model.score(dataset)
-        print(f"Score: {score}")
-
-        # predict
-        y_pred_ = model.predict(Dataset(X=np.array([[3, 5]])))
         print(f"Predictions: {y_pred_}")
+        print(f"Score: {score}")
+        print(f"Cost: {model.cost(dataset)}")
