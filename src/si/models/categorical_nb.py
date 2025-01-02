@@ -3,8 +3,6 @@ import numpy as np
 from si.base.model import Model
 from si.data.dataset import Dataset
 from si.metrics.accuracy import accuracy
-from si.statistics.euclidean_distance import euclidean_distance
-from si.metrics.rmse import rmse
 
 class CategoricalNB(Model):
     """
@@ -45,18 +43,17 @@ class CategoricalNB(Model):
             feature_counts[class_idx] += dataset.X[i]
 
         # Compute class priors
-        class_prior = class_counts / n_samples
+        self.class_prior = class_counts / n_samples
 
         # Apply Laplace smoothing to feature counts
         feature_counts += self.smothing
 
         # Compute the feature probabilities (P(feature | class))
-        feature_probs = feature_counts / (class_counts[:, np.newaxis] + 2 * self.smothing)
+        self.feature_probs = feature_counts / (class_counts[:, np.newaxis] + 2 * self.smothing)
+
 
         # Store the computed values
         self.class_counts = class_counts
-        self.feature_probs = feature_probs
-        self.class_prior = class_prior
 
         return self
 
