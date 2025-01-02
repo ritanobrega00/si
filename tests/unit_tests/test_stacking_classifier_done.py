@@ -4,10 +4,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 
 import unittest
 from datasets import DATASETS_PATH
-from si.data.dataset import Dataset
 from si.io.csv_file import read_csv
 from si.model_selection.split import train_test_split
-import numpy as np
 from si.models.decision_tree_classifier import DecisionTreeClassifier
 from si.models.knn_classifier import KNNClassifier
 from si.models.logistic_regression import LogisticRegression
