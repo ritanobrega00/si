@@ -1,15 +1,15 @@
-from unittest import TestCase
-
 import sys
 import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
+import unittest 
 from datasets import DATASETS_PATH
 
 from si.io.data_file import read_data_file
 from si.model_selection.split import train_test_split
 from si.models.decision_tree_classifier import DecisionTreeClassifier
 
-class TestDecisionTree(TestCase):
+class TestDecisionTree(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'breast_bin', 'breast-bin.csv')
@@ -42,3 +42,7 @@ class TestDecisionTree(TestCase):
         accuracy_ = decision_tree.score(self.test_dataset)
 
         self.assertEqual(round(accuracy_, 2), 0.92)
+
+if __name__ == '__main__':
+    unittest.main()
+    

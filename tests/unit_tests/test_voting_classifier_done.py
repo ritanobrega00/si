@@ -1,8 +1,9 @@
-from unittest import TestCase
+import sys
+import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
+import unittest 
 from datasets import DATASETS_PATH
-
-import os
 
 from si.ensemble.voting_classifier import VotingClassifier
 from si.io.data_file import read_data_file
@@ -11,7 +12,7 @@ from si.models.decision_tree_classifier import DecisionTreeClassifier
 from si.models.knn_classifier import KNNClassifier
 from si.models.logistic_regression import LogisticRegression
 
-class TestVotingClassifier(TestCase):
+class TestVotingClassifier(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'breast_bin', 'breast-bin.csv')
@@ -55,3 +56,6 @@ class TestVotingClassifier(TestCase):
         accuracy_ = vc.score(self.test_dataset)
 
         self.assertEqual(round(accuracy_, 2), 0.95)
+
+if __name__ == '__main__':
+    unittest.main()
