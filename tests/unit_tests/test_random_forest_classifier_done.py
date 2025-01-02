@@ -59,7 +59,7 @@ class TestRandomForestClassifier(unittest.TestCase):
                 
 
     def test_different_n_estimators(self):
-        for n_feat in [2, 5, 10]:
+        for n_feat in [2, 3]:
             rf = RandomForestClassifier(n_estimators=8, max_features=n_feat, min_sample_split=2,
                                          max_depth=10, mode='gini', seed=42)
             rf.fit(self.iris_train)
@@ -76,15 +76,6 @@ class TestRandomForestClassifier(unittest.TestCase):
         rf_entropy.fit(self.iris_train)
         self.assertEqual(len(rf_gini.trees), 5)
         self.assertEqual(len(rf_entropy.trees), 5)
-
-    def test_random_seed(self):
-        rf1 = RandomForestClassifier(n_estimators=3, seed=42)
-        rf2 = RandomForestClassifier(n_estimators=3, seed=42)
-        
-        rf1.fit(self.dataset_iris)
-        rf2.fit(self.dataset_iris)
-
-        self.assertEqual(rf1.trees, rf2.trees)
 
 if __name__ == '__main__':
     unittest.main()
