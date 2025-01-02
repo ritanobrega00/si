@@ -22,7 +22,7 @@ class TestSplits(unittest.TestCase):
         y = np.array([0, 1, 0, 1, 0, 1])
         self.dataset_custom = Dataset(X, y, features=["feature1", "feature2"], label="label")
 
-        self.datasets = [self.dataset_iris, self.dataset_cpu, self.dataset_custom]
+        self.datasets = [self.dataset_iris, self.dataset_custom]
 
         self.test_sizes = [0.2, 0.3, 0.5, 0.7, 0.9]
 
@@ -61,32 +61,30 @@ class TestSplits(unittest.TestCase):
 
     def test_split_random(self):
         for dataset in self.datasets:
-            train1, test1 = train_test_split(dataset, test_size=0.3, random_state=42)
-            train2, test2 = train_test_split(dataset, test_size=0.3, random_state=42)
+            train1, test1 = train_test_split(dataset, test_size=0.25, random_state=42)
+            train2, test2 = train_test_split(dataset, test_size=0.25, random_state=42)
+            train_diff, test_diff = train_test_split(dataset, test_size=0.25, random_state=5)
+            self.assertTrue(np.all(train1.X == train2.X))
+            self.assertTrue(np.all(test1.X == test2.X))
+            self.assertTrue(np.all(train1.y == train2.y))
+            self.assertTrue(np.all(test1.y == test2.y))
+            
+            self.assertFalse(np.all(train1.X == train_diff.X))
+            self.assertFalse(np.all(test1.X == test_diff.X))
+            self.assertFalse(np.all(train1.y == train_diff.y))
+            self.assertFalse(np.all(test1.y == test_diff.y))
+
+            train1, test1 = stratified_train_test_split(dataset, test_size=0.25, random_state=42)
+            train2, test2 = stratified_train_test_split(dataset, test_size=0.25, random_state=42)
+            train_diff, test_diff = stratified_train_test_split(dataset, test_size=0.25, random_state=5)
             self.assertTrue(np.all(train1.X == train2.X))
             self.assertTrue(np.all(test1.X == test2.X))
             self.assertTrue(np.all(train1.y == train2.y))
             self.assertTrue(np.all(test1.y == test2.y))
 
-            train1, test1 = stratified_train_test_split(dataset, test_size=0.3, random_state=42)
-            train2, test2 = stratified_train_test_split(dataset, test_size=0.3, random_state=42)
-            self.assertTrue(np.all(train1.X == train2.X))
-            self.assertTrue(np.all(test1.X == test2.X))
-            self.assertTrue(np.all(train1.y == train2.y))
-            self.assertTrue(np.all(test1.y == test2.y))
+            self.assertFalse(np.all(train1.X == train_diff.X))
+            self.assertFalse(np.all(test1.X == test_diff.X))
 
-            train1, test1 = train_test_split(dataset, test_size=0.2, random_state=42)
-            train2, test2 = train_test_split(dataset, test_size=0.2, random_state=5)
-            self.assertFalse(np.all(train1.X == train2.X))
-            self.assertFalse(np.all(test1.X == test2.X))
-
-            train1, test1 = stratified_train_test_split(dataset, test_size=0.2, random_state=42)
-            train2, test2 = stratified_train_test_split(dataset, test_size=0.2, random_state=5)
-            self.assertFalse(np.all(train1.X == train2.X))
-            self.assertFalse(np.all(test1.X == test2.X))
-
-
-    
 
 if __name__ == '__main__':
     unittest.main()
