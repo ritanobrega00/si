@@ -69,9 +69,7 @@ def stratified_train_test_split(dataset: Dataset, test_size: float = 0.2, random
         # There are some cases where the test sizer must be adjusted
         # like if it's too large for a class with too few samples (e.g 0.25 for a class with 3 samples)
         if n_test == 0:
-            print(f"Warning: The class {classes} has only {counts} samples, unable to allocate samples to the test set. "
-                  "Adjusting the test size for this class.")
-            n_test = 1 #to ensure at least one sample is in the test set
+            print(f"Warning: The class {classes} has only {counts} samples, unable to allocate samples to the test set.")
 
         # Shuffle the indices
         np.random.shuffle(idxs)
