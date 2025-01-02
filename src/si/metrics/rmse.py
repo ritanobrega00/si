@@ -15,3 +15,9 @@ def rmse(y_true, Y_pred) -> float:
     -> High RMSE: Indicates larger errors in predictions, worse performance.
     """
     return np.sqrt(mean_squared_error(y_true, Y_pred))
+
+if __name__ == '__main__':
+    y_true = np.array([0.1,1.1,1,1,1,1,0])
+    y_pred = np.array([0,1,1.1,1,1,1,0])
+    print( isinstance( rmse(y_true, y_pred), float))
+    print('RMSE:', rmse(y_true, y_pred)) 
