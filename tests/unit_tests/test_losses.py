@@ -1,5 +1,11 @@
-import os
-from unittest import TestCase
+import sys
+import os 
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
+import unittest 
+
+from datasets import DATASETS_PATH
 from si.io.data_file import read_data_file
 from si.model_selection.split import train_test_split
 from si.models.decision_tree_classifier import DecisionTreeClassifier
@@ -7,7 +13,7 @@ from datasets import DATASETS_PATH
 from si.neural_networks.losses import BinaryCrossEntropy, MeanSquaredError
 
 
-class TestLosses(TestCase):
+class TestLosses(unittest.TestCase):
 
     def setUp(self):
         
@@ -40,3 +46,6 @@ class TestLosses(TestCase):
         derivative_error = BinaryCrossEntropy().derivative(self.dataset.y, self.dataset.y)
 
         self.assertEqual(derivative_error.shape[0], self.dataset.shape()[0])
+
+if __name__ == "__main__":
+    unittest.main()
