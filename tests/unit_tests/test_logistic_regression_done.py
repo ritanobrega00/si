@@ -1,16 +1,16 @@
-from unittest import TestCase
+import sys
+import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-import numpy as np
+import unittest 
 from datasets import DATASETS_PATH
-
-import os
+import numpy as np
 from si.io.csv_file import read_csv
-
 from si.io.data_file import read_data_file
 from si.model_selection.split import train_test_split
 from si.models.logistic_regression import LogisticRegression
 
-class TestLogisticRegressor(TestCase):
+class TestLogisticRegressor(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'breast_bin', 'breast-bin.csv')
@@ -44,3 +44,6 @@ class TestLogisticRegressor(TestCase):
         accuracy_ = ridge.score(self.test_dataset)
 
         self.assertEqual(round(accuracy_, 2), 0.96)
+
+if __name__ == '__main__':
+    unittest.main()
