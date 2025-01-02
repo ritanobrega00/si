@@ -31,6 +31,8 @@ class KNNRegressor(Model):
         dataset: dataset object -> The training data
         """
         super().__init__(**kwargs)
+        if k < 1:
+            raise ValueError('k must be greater than 0')
         self.k = k
         self.distance = distance
         self.dataset = None
@@ -89,14 +91,20 @@ class KNNRegressor(Model):
     
 if __name__ == '__main__':
     from si.data.dataset import Dataset
-    from si.model_selection.split import train_test_split
+    from si.model_selection.split import stratified_train_test_split, train_test_split
 
     dataset_ = Dataset.from_random(600, 100, 1)
-    dataset_train, dataset_test = train_test_split(dataset_, test_size=0.2)
+    dataset_train, dataset_test = stratified_train_test_split(dataset_, test_size=0.2)
+    train1, test1 = train_test_split(dataset_, test_size=0.2)
 
     knn = KNNRegressor(k=3)
     knn.fit(dataset_train)
     score = knn.score(dataset_test)  
-    print(f'The RMSE of the model is: {score}')
+    print(f'The score of the model is: {score}')
+
+    knn.fit(train1)
+    score_split = knn.score(test1)  
+    print(f'The score of the model is: {score_split}')
+
 
 
