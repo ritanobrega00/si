@@ -1,15 +1,16 @@
-from unittest import TestCase
+import sys
+import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-import numpy as np
+import unittest 
 from datasets import DATASETS_PATH
-
-import os
+import numpy as np
 from si.io.csv_file import read_csv
 
 from si.model_selection.split import train_test_split
-from si.models.lasso_regression import LassoRegression
+from si.models.linear_regression import RidgeRegression
 
-class TestLassoRegressor(TestCase):
+class TestRidgeRegressor(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'cpu', 'cpu.csv')
@@ -20,12 +21,17 @@ class TestLassoRegressor(TestCase):
 
     def test_fit(self):
 
-        ridge = LassoRegression()
+        ridge = RidgeRegression()
         ridge.fit(self.train_dataset)
 
+        self.assertEqual(ridge.theta.shape[0], self.train_dataset.shape()[1])
+        self.assertNotEqual(ridge.theta_zero, None)
+        self.assertNotEqual(len(ridge.cost_history), 0)
+        self.assertNotEqual(len(ridge.mean), 0)
+        self.assertNotEqual(len(ridge.std), 0)
 
     def test_predict(self):
-        ridge = LassoRegression()
+        ridge = RidgeRegression()
         ridge.fit(self.train_dataset)
 
         predictions = ridge.predict(self.test_dataset)
@@ -33,8 +39,11 @@ class TestLassoRegressor(TestCase):
         self.assertEqual(predictions.shape[0], self.test_dataset.shape()[0])
     
     def test_score(self):
-        ridge = LassoRegression(scale=True, patience=5)
+        ridge = RidgeRegression()
         ridge.fit(self.train_dataset)
         mse_ = ridge.score(self.test_dataset)
 
-        self.assertEqual(round(mse_, 2), 5777.56)
+        self.assertEqual(round(mse_, 2), 9971.19)
+
+if __name__ == '__main__':
+    unittest.main()
