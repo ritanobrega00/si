@@ -173,6 +173,8 @@ class Dropout(Layer):
         """
         super().__init__()
         self.probability = probability
+        if not 0 <= self.probability < 1:
+            raise ValueError("The probability must be between 0 and 1.")
         self.mask = None
         self.input = None
         self.output = None
@@ -214,10 +216,8 @@ class Dropout(Layer):
         return output_error * self.mask
 
     def output_shape(self) -> tuple:
-        return self.input_shape()
+        return self.input.shape
 
     def parameters(self) -> int:
         return 0
 
-if __name__ == "__main__":
-    pass
