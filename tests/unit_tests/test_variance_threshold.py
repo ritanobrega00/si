@@ -1,13 +1,15 @@
-import os
-from unittest import TestCase
+import sys
+import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from datasets import DATASETS_PATH
+import unittest
 
+from datasets import DATASETS_PATH 
 from si.io.csv_file import read_csv
 from si.feature_selection.variance_threshold import VarianceThreshold
 
 
-class TestVarianceThreshold(TestCase):
+class TestVarianceThreshold(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'iris', 'iris.csv')
@@ -28,3 +30,6 @@ class TestVarianceThreshold(TestCase):
 
         self.assertGreater(len(self.dataset.features), len(new_dataset.features))
         self.assertGreater(self.dataset.X.shape[1], new_dataset.X.shape[1])
+
+if __name__ == '__main__':
+    unittest.main()

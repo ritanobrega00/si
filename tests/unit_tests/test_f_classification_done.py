@@ -1,14 +1,14 @@
+import sys
+import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
+import unittest
 
-from unittest import TestCase
-from datasets import DATASETS_PATH
-
-import os
+from datasets import DATASETS_PATH 
 from si.io.csv_file import read_csv
-
 from si.statistics.f_classification import f_classification
 
-class TestFClassification(TestCase):
+class TestFClassification(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'iris', 'iris.csv')
@@ -30,4 +30,7 @@ class TestFClassification(TestCase):
                 significant_different.append(False)
 
         self.assertTrue(any(significant_different))
+
+if __name__ == '__main__':
+    unittest.main()
             

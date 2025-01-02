@@ -1,9 +1,10 @@
-import unittest 
-
+import sys
 import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from datasets import DATASETS_PATH
+import unittest
 
+from datasets import DATASETS_PATH 
 from si.io.data_file import read_data_file, write_data_file
 
 

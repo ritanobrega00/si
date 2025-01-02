@@ -1,13 +1,16 @@
-from unittest import TestCase
-from datasets import DATASETS_PATH
+import sys
+import os 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-import os
+import unittest
+
+from datasets import DATASETS_PATH 
 from si.clustering.k_means import KMeans
 from si.io.csv_file import read_csv
 
 import numpy as np
 
-class TestKMeans(TestCase):
+class TestKMeans(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = os.path.join(DATASETS_PATH, 'iris', 'iris.csv')
@@ -35,3 +38,6 @@ class TestKMeans(TestCase):
         kmeans = kmeans.fit(self.dataset)
         clusters = kmeans.predict(self.dataset)
         self.assertEqual(list(np.sort(np.unique(clusters))), [0, 1, 2])
+
+if __name__ == '__main__':
+    unittest.main()
