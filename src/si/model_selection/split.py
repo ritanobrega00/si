@@ -42,7 +42,7 @@ def train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int
 
 def stratified_train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int = 42) -> tuple[Dataset, Dataset]:
     """
-    Aim: Split the dataset into stratified training and testing sets
+    Aim: Split the dataset into stratified training and testing sets to maintain the class distribution
 
     Parameters:
     dataset: object Dataset -> The dataset to split into train and test datasets
